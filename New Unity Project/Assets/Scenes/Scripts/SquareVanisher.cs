@@ -1,16 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SquareVanisher : MonoBehaviour
 {
     private static int gridWidth = SquareGenerator.gridWidth;
     private static int gridHeight = SquareGenerator.gridHeight;
     private int[,] grid = new int[gridWidth, gridHeight];
+    private static Color[] colors = ColorGenerator.Colors;
+    private GameObject start;
+    private static Color color;
+    public static List<GameObject> notSameColor = new List<GameObject>();
+
     // Use this for initialization
     void Start () {
-        for (int i = 0; i < gridWidth; i++) {
-            for (int j = 0; j < gridHeight; j++) {
+        for (int i = 0; i < gridHeight; i++) {
+            for (int j = 0; j < gridWidth; j++) {
                 grid[i, j] = 0;
         }
     }
@@ -24,65 +30,52 @@ public class SquareVanisher : MonoBehaviour
 
     private void OnMouseDown()
     {
-        destroyNeighbours(this.gameObject, this.gameObject.GetComponent<SpriteRenderer>().color);
+        start = this.gameObject;
+        color = this.gameObject.GetComponent<SpriteRenderer>().color;
+        destroyNeighbours(this.gameObject, color);
+        foreach (GameObject g in notSameColor) {
+            if (g != null) {
+                changeColor(g);
+            }
+        }
+        notSameColor.Clear();
     }
 
-    // List<GameObject> populateNeighbours()
-    // {
-    //     List<GameObject> list = new List<GameObject>();
-    //     //If we're at x, y.
-    //     //Left one is at x-1,y
-    //     GameObject tempObj = GameObject.Find("Tile_" + (x - 1) + "_" + y);
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + (x - 1) + "_" + y + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
+    private List<GameObject> neighbourCell(string loc, int row, int col, List<GameObject> neighbours)
+    {
+        if (GameObject.Find(loc) != null && GameObject.Find(loc).GetComponent<SpriteRenderer>().color == color && grid[row, col] == 0)
+        {
+            grid[row, col] = 1;
+            neighbours.Add(GameObject.Find(loc));
+        }
+        else {
+            notSameColor.Add(GameObject.Find(loc));
+        }
 
-    //     //Right one is at x+1,y
-    //     tempObj = GameObject.Find("Tile_" + (x + 1) + "_" + y);
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + (x + 1) + "_" + y + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
+        return neighbours;
+    }
 
-    //     //Bottom ones are at x,y-1 and x+1,y-1
-    //     tempObj = GameObject.Find("Tile_" + x + "_" + (y - 1));
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + x + "_" + (y - 1) + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
-
-    //     tempObj = GameObject.Find("Tile_" + (x + 1) + "_" + (y - 1));
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + (x + 1) + "_" + (y - 1) + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
-
-    //     //Top ones are at x,y+1 and x+1,y+1
-    //     tempObj = GameObject.Find("Tile_" + x + "_" + (y + 1));
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + x + "_" + (y + 1) + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
-
-    //     tempObj = GameObject.Find("Tile_" + (x + 1) + "_" + (y + 1));
-    //     if (tempObj == null)
-    //         Debug.Log("Tile_" + (x + 1) + "_" + (y + 1) + " Does NOT exist");
-    //     else
-    //         list.Add(tempObj);
-
-    //     return list;
-    // }
+    private void changeColor(GameObject g) {
+        int index = System.Array.IndexOf(colors, g.GetComponent<SpriteRenderer>().color);
+        int[] values = Enumerable.Range(0, colors.Length).Where(item => item != index).ToArray();
+        System.Random random = new System.Random();
+        int r = values[random.Next(values.Length)];
+        g.GetComponent<SpriteRenderer>().color = colors[r];
+    }
+ 
 
     private void destroyNeighbours(GameObject curr, Color color)
     {
         string name = curr.name;
-        int row = 0, col = 0;
 
-        string string_row = name.Substring(name.IndexOf('[') + 1, 1);
-        int.TryParse(string_row, out row);
-        string string_col = name.Substring(name.IndexOf(',') + 2, 1);
-        int.TryParse(string_col, out col);
+       // get row and col of curr cell from curr name
+        string string_row = name.Substring(name.IndexOf('[') + 1, name.Length - name.Substring(name.IndexOf(',')).Length - name.Substring(0, name.IndexOf('[') + 1).Length);
+        int.TryParse(string_row, out int row);
+
+        string string_col = name.Substring(name.IndexOf(',') + 1, name.Length - 1 - name.Substring(0, name.IndexOf(',') + 1).Length);
+        int.TryParse(string_col, out int col);
+
+        grid[row, col] = 1;
         
         int left_col = col - 1;
         int right_col = col + 1;
@@ -93,100 +86,65 @@ public class SquareVanisher : MonoBehaviour
         string right = "Square [" + string_row + ", " + right_col.ToString() + "]";
         string up = "Square [" + up_row.ToString() + ", " + string_col + "]";
         string down = "Square [" + down_row.ToString() + ", " + string_col + "]";
-        Debug.Log("left: " + left + "; right: " + right + "; up: " + up + "; down: " + down);
+        
         List<GameObject> neighbours = new List<GameObject>();
-        if (GameObject.Find(left) != null && GameObject.Find(left).GetComponent<SpriteRenderer>().color == color)
+
+        neighbours = neighbourCell(left, row, left_col, neighbours);
+        neighbours = neighbourCell(right, row, right_col, neighbours);
+        neighbours = neighbourCell(up, up_row, col, neighbours);
+        neighbours = neighbourCell(down, down_row, col, neighbours);
+
+        if (neighbours.ToArray().Length == 0)
         {
-            if (grid[row, left_col] == 0 && row >= 0 && left_col >= 0) {
-                neighbours.Add(GameObject.Find(left));
-                grid[row, left_col] = 1;
+            if (curr != start) {
+                Destroy(curr);
             } else {
-                return;
+                notSameColor.Clear();
             }
-            destroyNeighbours(GameObject.Find(left), color);
+            return;
         }
-        if (GameObject.Find(right) != null && GameObject.Find(right).GetComponent<SpriteRenderer>().color == color)
-        {
-           if (grid[row, right_col] == 0 && row >= 0 && right_col >= 0) {
-                neighbours.Add(GameObject.Find(right));
-               grid[row, right_col] = 1;
-            } else {
-                return;
-            }
-            destroyNeighbours(GameObject.Find(right), color);
-        }
-        if (GameObject.Find(up) != null && GameObject.Find(up).GetComponent<SpriteRenderer>().color == color)
-        {
-           if (grid[up_row, col] == 0 && up_row >= 0 && col >= 0) {
-                neighbours.Add(GameObject.Find(up));
-                grid[up_row, col] = 1;
-            } else {
-                return;
-            }
-            destroyNeighbours(GameObject.Find(up), color);
-        }
-        if (GameObject.Find(down) != null && GameObject.Find(down).GetComponent<SpriteRenderer>().color == color)
-        {
-           if (grid[down_row, col] == 0 && down_row >= 0 && col >= 0) {
-                neighbours.Add(GameObject.Find(down));
-               grid[down_row, col] = 1;
-            } else {
-                return;
-            }
-           destroyNeighbours(GameObject.Find(down), color);
-        }
-        Debug.Log(neighbours[0].GetComponent<SpriteRenderer>().color);
-        Destroy(this.gameObject);
-        Debug.Log("left: " + left + "; neighbour: " + neighbours[0].name);
+
         foreach (GameObject g in neighbours)
         {
-            if (g.GetComponent<SpriteRenderer>().color == color)
-            {
+            string_row = g.name.Substring(name.IndexOf('[') + 1, 1);
+            int.TryParse(string_row, out row);
+
+            string_col = g.name.Substring(name.IndexOf(',') + 2, 1);
+            int.TryParse(string_col, out col);
+
+            destroyNeighbours(g, color);
+
+            if (grid[row, col] == 1)
                 Destroy(g);
-            }
         }
+
+        Destroy(curr);
+
         // foreach (GameObject g in neighbours)
         // {
-        //     Debug.Log(g.name);
         //     string_row = g.name.Substring(name.IndexOf('[') + 1, 1);
         //     int.TryParse(string_row, out row);
         //     string_col = g.name.Substring(name.IndexOf(',') + 2, 1);
         //     int.TryParse(string_col, out col);
-        //     if (grid[row, col] == 1)
+        //     if (grid[row, col] == 1) {
         //         return;
+        //     }
         //     grid[row, col] = 1;
+            
         //     if (g.GetComponent<SpriteRenderer>().color == color)
         //     {
-        //         Destroy(g);
         //         destroyNeighbours(g, color);
+        //         Destroy(g);
+        //     } else {
+        //         int index = System.Array.IndexOf(colors, g.GetComponent<SpriteRenderer>().color);
+        //         int[] values = Enumerable.Range(0, colors.Length).Where(item => item != index).ToArray();
+        //         System.Random random = new System.Random();
+        //         int r = values[random.Next(values.Length)];
+        //         g.GetComponent<SpriteRenderer>().color = colors[r];
         //     }
-        // }        
+
+        // }
+       
     }
-
-    // private List<GameObject> getBFS(Graph<GameObject> graph, GameObject start) {
-    //     List<GameObject> visited = new List<GameObject>();
-
-    //     if (!graph.AdjacencyList.ContainsKey(start))
-    //         return visited;
-
-    //     var queue = new Queue<GameObject>();
-    //     queue.Enqueue(start);
-
-    //     while (queue.Count > 0) {
-    //         var vertex = queue.Dequeue();
-
-    //         if (visited.Contains(vertex))
-    //             continue;
-
-    //             visited.Add(vertex);
-
-    //             foreach(var neighbor in graph.AdjacencyList[vertex])
-    //                 if (!visited.Contains(neighbor))
-    //                     queue.Enqueue(neighbor);
-    //     }
-
-    //     return visited;
-    // }
-
 
 }

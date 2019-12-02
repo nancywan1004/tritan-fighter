@@ -6,8 +6,8 @@ public class SquareGenerator : MonoBehaviour
 {
     private float tileSize = 1;
     public GameObject squarePrefab;
-    public static int gridWidth = 10;
-    public static int gridHeight = 20;
+    public static int gridWidth = 9;
+    public static int gridHeight = 9;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +22,7 @@ public class SquareGenerator : MonoBehaviour
             for (int col = 0; col < gridHeight; col++)
             {
                 GameObject tile = (GameObject)Instantiate(squarePrefab, transform);
-                tile.name = "Square [" + row + ", " + col + "]";
+                tile.name = "Square[" + row + "," + col + "]";
                 float posX = col * tileSize;
                 float posY = row * -tileSize;
                 tile.transform.position = new Vector2(posX, posY);

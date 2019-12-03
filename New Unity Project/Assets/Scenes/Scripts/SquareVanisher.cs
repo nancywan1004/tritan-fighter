@@ -80,7 +80,7 @@ public class SquareVanisher : MonoBehaviour
                 Destroy(curr);
             }
             else {
-                Destroy(start);
+                notSameColor.Clear();
             }
             return;
         }

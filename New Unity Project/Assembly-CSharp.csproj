@@ -54,11 +54,13 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scenes\Scripts\ColorGenerator.cs" />
+     <Compile Include="Assets\Scenes\Scripts\GemSpawn.cs" />
      <Compile Include="Assets\Scenes\Scripts\ResumeController.cs" />
      <Compile Include="Assets\Scenes\Scripts\ScoreRecorder.cs" />
      <Compile Include="Assets\Scenes\Scripts\SquareGenerator.cs" />
      <Compile Include="Assets\Scenes\Scripts\SquareVanisher.cs" />
      <Compile Include="Assets\Scenes\Scripts\Timer.cs" />
+     <Compile Include="Assets\Scenes\Scripts\VisualizeArea.cs" />
  <Reference Include="Unity.2D.SpriteShape.Editor">
  <HintPath>/Users/wanleqi/Desktop/tritan-fighter/New Unity Project/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
  </Reference>

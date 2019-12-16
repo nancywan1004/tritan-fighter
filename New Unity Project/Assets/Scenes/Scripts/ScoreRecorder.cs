@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreRecorder : MonoBehaviour
 {
-    public int score;
+    private static int pointsPerSquare = 100;
+    private static int penalty = 150;
+    private static int score = 0;
     // Start is called before the first frame update
     void Start()
     {
-        score = 0;
+
     }
 
     // Update is called once per frame
@@ -17,12 +20,16 @@ public class ScoreRecorder : MonoBehaviour
 
     }
 
-    //checks for entering a trigger
-	void OnTriggerEnter2D(Collider2D other){
-		//checks other collider's tag
-		if(other.gameObject.tag == "Enemy"){
-			score++;								//increments score
-		}
+    public static void AddToScore(int patchSize)
+    {
+        score += pointsPerSquare;
+        GameObject.FindGameObjectWithTag("Score").GetComponent<Text>().text = "Score: " + score.ToString();
+    }
+
+    public static void DeleteFromScore()
+    {
+        score -= penalty;
+        GameObject.FindGameObjectWithTag("Score").GetComponent<Text>().text = "Score: " + score.ToString();
     }
 
     

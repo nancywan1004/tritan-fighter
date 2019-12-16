@@ -44,6 +44,7 @@ public class SquareVanisher : MonoBehaviour
 
     private void destroyNeighbours(GameObject curr, Color color)
     {
+        int patchSize = 0;
         string name = curr.name;
 
        // get row and col of curr cell from curr name
@@ -62,8 +63,10 @@ public class SquareVanisher : MonoBehaviour
         {
             if (curr != start) {
                 Destroy(curr);
+                ScoreRecorder.AddToScore(patchSize);
             }
             else {
+                ScoreRecorder.DeleteFromScore();
                 notSameColor.Clear();
             }
             return;
@@ -82,12 +85,14 @@ public class SquareVanisher : MonoBehaviour
 
             if (grid[row, col] == 1) {
                 Destroy(g);
+                patchSize++;
             }
         }
 
         Destroy(curr);
-        Debug.LogError("the current game object is deleted or not:" + curr);
-       
+        patchSize++;
+      //  Debug.LogError("the current game object is deleted or not:" + curr);
+        ScoreRecorder.AddToScore(patchSize);  
     }
 
     private List<GameObject> neighbourCell(string loc, int row, int col, List<GameObject> neighbours)

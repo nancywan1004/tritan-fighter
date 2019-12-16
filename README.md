@@ -1,3 +1,5 @@
+# Tritan Fighter
+## Description
 This is a special color mining game designed for people with blue-color recognition weakness. Here are a few features that are alive so far:
 
 - We have a grid filled with four different colors: light blue, light pink, dark blue and dark pink.
@@ -7,3 +9,7 @@ This is a special color mining game designed for people with blue-color recognit
 - However, we use a timer to make the game more tense, yet more fun as a nature of games. 
 
 Hope you enjoy! 😉
+
+## Demo
+Here is a quick demo of how it works:
+![Tritan Fighter Game Demo v.1.0](Demo/tritan_fighter_demo.gif)

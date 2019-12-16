@@ -12,4 +12,5 @@ Hope you enjoy! 😉
 
 ## Demo
 Here is a quick demo of how it works:
-![Tritan Fighter Game Demo v.1.0](Demo/tritan_fighter_demo.gif)
+
+![Tritan Fighter Game Demo v.1.0](Demo/tritan_fighter_demo.GIF)

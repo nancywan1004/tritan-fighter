@@ -12,7 +12,6 @@ public class SquareVanisher : MonoBehaviour
     private GameObject start;
     private static Color color;
     public static List<GameObject> notSameColor = new List<GameObject>();
-    private List<GameObject> remainings = new List<GameObject>();
 
     // Use this for initialization
     void Start () 
@@ -28,16 +27,18 @@ public class SquareVanisher : MonoBehaviour
 
     private void OnMouseDown()
     {
-        start = this.gameObject;
-        color = this.gameObject.GetComponent<SpriteRenderer>().color;
-        destroyNeighbours(this.gameObject, color);
-        if (notSameColor.Count > 0) {
-            foreach (GameObject g in notSameColor) {
-                if (g != null) {
-                    changeColor(g);
+        if (Timer.gameOver == false) {
+            start = this.gameObject;
+            color = this.gameObject.GetComponent<SpriteRenderer>().color;
+            destroyNeighbours(this.gameObject, color);
+            if (notSameColor.Count > 0) {
+                foreach (GameObject g in notSameColor) {
+                    if (g != null) {
+                        changeColor(g);
+                    }
                 }
+                notSameColor.Clear();
             }
-            notSameColor.Clear();
         }
     }
  

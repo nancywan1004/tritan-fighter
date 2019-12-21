@@ -8,7 +8,7 @@ public class Timer : MonoBehaviour
     public Text timeText;
     public float timer = 10.00f; //Countdown Timer
     public GameObject retryMenu; // Set in inspector
-    public bool gameOver;
+    public static bool gameOver;
 
     // Start is called before the first frame update
     void Start()

@@ -2,6 +2,8 @@
 ## Description
 This is a special color mining game designed for people with blue-color recognition weakness.
 
+A quick demo here:
+
 ![Tritan Fighter Game Demo v.1.0](Demo/tritan_fighter_demo.GIF)
 
 ## File Structure (New Unity Project/Assets/Scenes)
@@ -38,3 +40,6 @@ This is a special color mining game designed for people with blue-color recognit
 - **SquareVanisher.cs** - In the mean time, the neighbours with different colors will change their current color to one of the other three colors randomly.
 - **ScoreRecorder.cs, GemSpawn.cs** - The more squares you remove, the more points you get. AND you will finally reveal the gems beneath it.
 - **Timer.cs** - However, a timer is added to make the game more tense, yet more fun as a nature of games.
+
+## Remark
+This project was created during 2019 UBC Local Hack Day with Angela Tian.

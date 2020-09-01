@@ -3,6 +3,7 @@
 This is a special color mining game designed for people with blue-color recognition weakness.
 
 A quick demo here:
+
 ![Tritan Fighter Game Demo v.1.0](Demo/tritan_fighter_demo.GIF)
 
 ## File Structure (New Unity Project/Assets/Scenes)
